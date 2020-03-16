@@ -1,6 +1,6 @@
 import './styles.css';
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { addMessage } from 'stores/messages/actions';
+import { addMessage, getMessages } from 'stores/messages/actions';
 import { connect, getCurrentUser } from 'stores/users/actions';
 import { useAllMessages } from 'stores/messages/selectors';
 import { useCurrentUser } from 'stores/users/selectors';
@@ -18,7 +18,12 @@ const App = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.info('oops');
+    console.info('>>>', currentUser);
+    if (currentUser) dispatch(getMessages());
+  }, [currentUser, dispatch]);
+
+  useEffect(() => {
+    setMessage('');
   }, [messages]);
 
   function onMessageChange(event: ChangeEvent<HTMLInputElement>): void {
@@ -28,7 +33,6 @@ const App = () => {
   function onMessageSubmit(event: FormEvent): void {
     event.preventDefault();
     dispatch(addMessage({ body: message }));
-    setMessage('');
   }
 
   function onNicknameChange(event:ChangeEvent<HTMLInputElement>): void {
@@ -53,7 +57,7 @@ const App = () => {
   return (
     <div className="app">
       [connected as {currentUser.name}]
-      {/*messages.map(message => (
+      {messages.map(message => (
         <div>
           [{message.createdAt}]
           {' '}
@@ -61,7 +65,7 @@ const App = () => {
           {' '}
           {message.body}
         </div>
-        ))*/}
+      ))}
       <form onSubmit={onMessageSubmit}>
         <input onChange={onMessageChange} value={message} />
       </form>

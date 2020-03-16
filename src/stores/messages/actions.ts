@@ -23,3 +23,22 @@ export const addMessage = (variables: AddMessageArgs) => ({
     variables,
   },
 });
+
+export const getMessages = () => ({
+  type: '@messages/get',
+  graphql: {
+    query: `
+      {
+        messages {
+          author {
+            id
+            name
+          }
+          body
+          createdAt
+          id
+        }
+      }
+    `,
+  },
+});
