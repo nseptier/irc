@@ -1,6 +1,12 @@
 import './styles.css';
 import moment from 'moment';
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FormEvent,
+  Fragment,
+  useEffect,
+  useState,
+} from 'react';
 import {
   addMessage,
   getMessages,
@@ -63,19 +69,24 @@ const App = () => {
 
   return (
     <div className="app">
-      [connected as {currentUser.name}]
-      {messages.map(message => (
-        <div key={message.id}>
-          [{moment(+message.createdAt).format('HH:mm:ss')}]
-          {' '}
-          &lt;{message.author.name}&gt;
-          {' '}
-          {message.body}
-        </div>
-      ))}
-      <form onSubmit={onMessageSubmit}>
-        <input onChange={onMessageChange} value={message} />
-      </form>
+      <div className="messages-thread">
+        {messages.map(message => (
+          <Fragment key={message.id}>
+            <span className="timestamp">
+              {moment(+message.createdAt).format('HH:mm:ss')}
+            </span>
+            <span className="author">{message.author.name}</span>
+            <span className="body">{message.body}</span>
+          </Fragment>
+        ))}
+        <form className="text-field" onSubmit={onMessageSubmit}>
+          <input
+            className="text-field__input"
+            onChange={onMessageChange}
+            value={message}
+          />
+        </form>
+      </div>
     </div>
   );
 };
