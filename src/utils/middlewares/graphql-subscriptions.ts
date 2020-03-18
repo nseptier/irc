@@ -7,16 +7,20 @@ const GQL = {
   DATA: 'data',
   START: 'start',
 };
-const ws = new WebSocket(GRAPHQL_WS_URL, 'graphql-ws');
+let ws: WebSocket;
 
 export default (store: MiddlewareAPI) =>
 (next: Dispatch) =>
 async (action: AnyAction) => {
   if (!action.subscription) return next(action);
 
-  ws.send(JSON.stringify({
-    type: GQL.CONNECTION_INIT,
-  }));
+  if (!ws) {
+    ws = new WebSocket(GRAPHQL_WS_URL, 'graphql-ws');
+
+    ws.onopen = () => ws.send(JSON.stringify({
+      type: GQL.CONNECTION_INIT,
+    }));
+  }
 
   ws.addEventListener('message', event => {
     const response = JSON.parse(event.data);
