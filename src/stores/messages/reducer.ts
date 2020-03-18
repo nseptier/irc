@@ -4,16 +4,16 @@ import { Message, Messages } from './types';
 
 function allIds(state: string[] = [], action: AnyAction): string[] {
   switch(action.type) {
-    case '@messages/add--success':
+    case '@messages/get--success':
+      return action.payload.data.messages.map((message: Message) => (
+        message.id
+      ));
+
+    case '@messages/onMessageAdded':
       return [
         ...state,
-        action.payload.data.addMessage.message.id,
+        action.payload.data.messageAdded.message.id,
       ];
-
-      case '@messages/get--success':
-        return action.payload.data.messages.map((message: Message) => (
-          message.id
-        ));
 
     default: return state;
   }
@@ -21,11 +21,6 @@ function allIds(state: string[] = [], action: AnyAction): string[] {
 
 function byId(state: Messages = {}, action: AnyAction): Messages {
   switch (action.type) {
-    case '@messages/add--success':
-      const { message } = action.payload.data.addMessage;
-
-      return { ...state, [message.id]: message };
-
     case '@messages/get--success':
       let nextState = {};
 
@@ -33,6 +28,12 @@ function byId(state: Messages = {}, action: AnyAction): Messages {
         nextState = { ...nextState, [message.id]: message };
       });
       return nextState;
+
+    case '@messages/onMessageAdded': {
+      const { message } = action.payload.data.messageAdded;
+
+      return { ...state, [message.id]: message };
+    }
 
     default: return state;
   }

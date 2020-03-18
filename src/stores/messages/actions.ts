@@ -42,3 +42,24 @@ export const getMessages = () => ({
     `,
   },
 });
+
+export const listenToAddedMessages = () => ({
+  type: '@messages/onMessageAdded',
+  subscription: {
+    query: `
+      subscription {
+        messageAdded {
+          message {
+            author {
+              id
+              name
+            }
+            body
+            createdAt
+            id
+          }
+        }
+      }
+    `,
+  },
+});

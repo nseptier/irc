@@ -1,6 +1,10 @@
 import './styles.css';
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { addMessage, getMessages } from 'stores/messages/actions';
+import {
+  addMessage,
+  getMessages,
+  listenToAddedMessages,
+} from 'stores/messages/actions';
 import { connect, getCurrentUser } from 'stores/users/actions';
 import { useAllMessages } from 'stores/messages/selectors';
 import { useCurrentUser } from 'stores/users/selectors';
@@ -18,8 +22,10 @@ const App = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.info('>>>', currentUser);
-    if (currentUser) dispatch(getMessages());
+    if (currentUser) {
+      dispatch(getMessages());
+      dispatch(listenToAddedMessages());
+    }
   }, [currentUser, dispatch]);
 
   useEffect(() => {
@@ -58,7 +64,7 @@ const App = () => {
     <div className="app">
       [connected as {currentUser.name}]
       {messages.map(message => (
-        <div>
+        <div key={message.id}>
           [{message.createdAt}]
           {' '}
           &lt;{message.author.name}&gt;
