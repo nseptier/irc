@@ -1,4 +1,5 @@
 import './styles.css';
+import moment from 'moment';
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import {
   addMessage,
@@ -65,7 +66,7 @@ const App = () => {
       [connected as {currentUser.name}]
       {messages.map(message => (
         <div key={message.id}>
-          [{message.createdAt}]
+          [{moment(+message.createdAt).format('HH:mm:ss')}]
           {' '}
           &lt;{message.author.name}&gt;
           {' '}
