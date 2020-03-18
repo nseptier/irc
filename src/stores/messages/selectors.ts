@@ -1,15 +1,9 @@
+import { Message } from './types';
 import { RootState } from 'stores/types';
-import { shallowEqual, useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-export function useAllMessages() {
-  const state = useSelector(
-    (state: RootState) => state.messages,
-    shallowEqual,
-  );
+const getAllMessages = (state: RootState): Message[] => (
+  state.messages.allIds.map((id: string) => state.messages.byId[id])
+);
 
-  return useMemo(
-    () => state.allIds.map((id: string) => state.byId[id]),
-    [state],
-  );
-}
+export const useAllMessages = (): Message[] => useSelector(getAllMessages);

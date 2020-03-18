@@ -1,9 +1,7 @@
 import { RootState } from 'stores/types';
-import { shallowEqual, useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { User } from './types';
+import { useSelector } from 'react-redux';
 
-export function useCurrentUser() {
-  const state = useSelector((state: RootState) => state.users, shallowEqual);
+const getCurrentUser = (state: RootState): User | null => state.users.current;
 
-  return useMemo(() => state.current, [state]);
-}
+export const useCurrentUser = (): User | null => useSelector(getCurrentUser);
