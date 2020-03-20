@@ -12,7 +12,12 @@ import {
   getMessages,
   listenToAddedMessages,
 } from 'stores/messages/actions';
-import { connect, getCurrentUser } from 'stores/users/actions';
+import {
+  connect,
+  getCurrentUser,
+  listenToConnectedUsers,
+} from 'stores/users/actions';
+import { Message } from 'stores/messages/types';
 import { useAllMessages } from 'stores/messages/selectors';
 import { useCurrentUser } from 'stores/users/selectors';
 import { useDispatch } from 'react-redux';
@@ -32,12 +37,21 @@ const App = () => {
     if (currentUser) {
       dispatch(getMessages());
       dispatch(listenToAddedMessages());
+      dispatch(listenToConnectedUsers());
     }
   }, [currentUser, dispatch]);
 
   useEffect(() => {
     setMessage('');
   }, [messages]);
+
+  function buildAnnouncement(message: Message): string {
+    switch (message.event) {
+      case 'USER_CONNECTED': return `${message.author.name} has joined.`;
+
+      default: return '';
+    }
+  }
 
   function onMessageChange(event: ChangeEvent<HTMLInputElement>): void {
     setMessage(event.target.value);
@@ -75,8 +89,17 @@ const App = () => {
             <span className="timestamp">
               {moment(+message.createdAt).format('HH:mm:ss')}
             </span>
-            <span className="author">{message.author.name}</span>
-            <span className="body">{message.body}</span>
+            {message.system
+              ? <>
+                <span className="announcement">
+                  *** {buildAnnouncement(message)}
+                </span>
+              </>
+              : <>
+                <span className="author">{message.author.name}</span>
+                <span className="body">{message.body}</span>
+              </>
+            }
           </Fragment>
         ))}
         <form className="text-field" onSubmit={onMessageSubmit}>

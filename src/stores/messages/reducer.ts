@@ -15,6 +15,12 @@ function allIds(state: string[] = [], action: AnyAction): string[] {
         action.payload.data.messageAdded.message.id,
       ];
 
+    case '@users/onUserConnected':
+      return [
+        ...state,
+        action.payload.data.userConnected.message.id,
+      ];
+
     default: return state;
   }
 }
@@ -31,6 +37,12 @@ function byId(state: Messages = {}, action: AnyAction): Messages {
 
     case '@messages/onMessageAdded': {
       const { message } = action.payload.data.messageAdded;
+
+      return { ...state, [message.id]: message };
+    }
+
+    case '@users/onUserConnected': {
+      const { message } = action.payload.data.userConnected;
 
       return { ...state, [message.id]: message };
     }

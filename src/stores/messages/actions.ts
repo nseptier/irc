@@ -2,6 +2,20 @@ type AddMessageArgs = {
   body: string,
 };
 
+const messageProps = `
+  fragment props on Message {
+    author {
+      id
+      name
+    }
+    body
+    createdAt
+    event
+    id
+    system
+  }
+`;
+
 export const addMessage = (variables: AddMessageArgs) => ({
   type: '@messages/add',
   graphql: {
@@ -9,12 +23,6 @@ export const addMessage = (variables: AddMessageArgs) => ({
       mutation($body: String!) {
         addMessage(body: $body) {
           message {
-            author {
-              id
-              name
-            }
-            body
-            createdAt
             id
           }
         }
@@ -30,15 +38,10 @@ export const getMessages = () => ({
     query: `
       {
         messages {
-          author {
-            id
-            name
-          }
-          body
-          createdAt
-          id
+          ...props
         }
       }
+      ${messageProps}
     `,
   },
 });
@@ -50,16 +53,11 @@ export const listenToAddedMessages = () => ({
       subscription {
         messageAdded {
           message {
-            author {
-              id
-              name
-            }
-            body
-            createdAt
-            id
+            ...props
           }
         }
       }
+      ${messageProps}
     `,
   },
 });

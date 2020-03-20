@@ -32,3 +32,28 @@ export const getCurrentUser = () => ({
     `,
   },
 });
+
+export const listenToConnectedUsers = () => ({
+  type: '@users/onUserConnected',
+  subscription: {
+    query: `
+      subscription {
+        userConnected {
+          message {
+            author {
+              name
+            }
+            createdAt
+            event
+            id
+            system
+          }
+          user {
+            id
+            name
+          }
+        }
+      }
+    `,
+  },
+});
