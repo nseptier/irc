@@ -2,11 +2,11 @@ import './styles.css';
 import moment from 'moment';
 import React, {
   ChangeEvent,
-  FC,
   FormEvent,
   Fragment,
   KeyboardEvent,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import {
@@ -28,9 +28,10 @@ const App = () => {
   const currentUser = useCurrentUser();
   const messages = useAllMessages();
   const dispatch = useDispatch();
+  const formNode = useRef<HTMLFormElement | null>(null);
+  const scrollEndNode = useRef<HTMLDivElement | null>(null);
   const [message, setMessage] = useState('');
   const [nickname, setNickname] = useState('');
-  let form: HTMLElement | null;
 
   useEffect(() => {
     dispatch(getCurrentUser());
@@ -46,6 +47,7 @@ const App = () => {
 
   useEffect(() => {
     setMessage('');
+    scrollToBottom();
   }, [messages]);
 
   function buildAnnouncement(message: Message): string {
@@ -63,7 +65,7 @@ const App = () => {
   function onMessageKeyDown(event: KeyboardEvent<HTMLTextAreaElement>): void {
     if (event.key !== 'Enter' || event.shiftKey) return;
     event.preventDefault();
-    form!.dispatchEvent(new Event(
+    formNode.current!.dispatchEvent(new Event(
       'submit',
 
       // Firefox will ignore event.preventDefault() without this
@@ -89,10 +91,10 @@ const App = () => {
     dispatch(connect({ name: nickname }));
   }
 
-  function formRef(this: FC, node: HTMLElement | null) {
-    if (!node) return;
-    form = node;
-  };
+  function scrollToBottom(): void {
+    if (!scrollEndNode.current) return;
+    scrollEndNode.current.scrollIntoView({ behavior: "smooth" });
+  }
 
   const textareaRef = (node: HTMLElement | null) => {
     if (!node) return;
@@ -131,16 +133,17 @@ const App = () => {
             }
           </Fragment>
         ))}
-        <form className="text-field" onSubmit={onMessageSubmit} ref={formRef}>
-          <textarea
-            className="text-field__input"
-            onChange={onMessageChange}
-            onKeyDown={onMessageKeyDown}
-            ref={textareaRef}
-            value={message}
-          />
-        </form>
+        <div ref={scrollEndNode} />
       </div>
+      <form className="text-field" onSubmit={onMessageSubmit} ref={formNode}>
+        <textarea
+          className="text-field__input"
+          onChange={onMessageChange}
+          onKeyDown={onMessageKeyDown}
+          ref={textareaRef}
+          value={message}
+        />
+      </form>
     </div>
   );
 };

@@ -5,7 +5,11 @@
 }
 
 .app {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
   height: 100vh;
+  padding: 20px;
   width: 100vw;
 }
 
@@ -19,7 +23,6 @@
 }
 
 .text-field {
-  grid-column: 3;
   line-height: 0;
   margin-top: 8px;
   border: 1px solid lightgray;
@@ -30,11 +33,16 @@
   border: 0;
   border-radius: inherit;
   box-sizing: border-box;
+  font-family: inherit;
   line-height: 1.2em;
-  /* 2 lines + padding + border */
-  min-height: calc(1.2em * 2 + 8px * 2 + 1px * 2);
-  padding: 8px;
-  resize: vertical;
+
+  /* 3 lines + padding + border */
+  max-height: calc(1.2em * 8 + 8px * 2 + 1px * 2);
+
+  /* 8 lines + padding + border */
+  min-height: calc(1.2em * 3 + 8px * 2 + 1px * 2);
+  padding: 12px;
+  resize: none;
   width: 100%;
 }
 
@@ -42,8 +50,10 @@
   align-items: baseline;
   box-sizing: border-box;
   display: grid;
+  flex: auto;
   grid-template-columns: min-content min-content 1fr;
-  padding: 20px;
+  line-height: 1.2;
+  overflow: auto;
   row-gap: 4px;
 }
 
