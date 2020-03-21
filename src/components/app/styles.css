@@ -14,16 +14,27 @@
   margin-right: 12px;
 }
 
+.body {
+  white-space: pre;
+}
+
 .text-field {
-  grid-column: 2 / span 2;
+  grid-column: 3;
+  line-height: 0;
   margin-top: 8px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
 }
 
 .text-field__input {
-  border: 1px solid lightgray;
-  border-radius: 4px;
+  border: 0;
+  border-radius: inherit;
   box-sizing: border-box;
+  line-height: 1.2em;
+  /* 2 lines + padding + border */
+  min-height: calc(1.2em * 2 + 8px * 2 + 1px * 2);
   padding: 8px;
+  resize: vertical;
   width: 100%;
 }
 

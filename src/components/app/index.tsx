@@ -2,8 +2,10 @@ import './styles.css';
 import moment from 'moment';
 import React, {
   ChangeEvent,
+  FC,
   FormEvent,
   Fragment,
+  KeyboardEvent,
   useEffect,
   useState,
 } from 'react';
@@ -28,6 +30,7 @@ const App = () => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
   const [nickname, setNickname] = useState('');
+  let form: HTMLElement | null;
 
   useEffect(() => {
     dispatch(getCurrentUser());
@@ -53,13 +56,27 @@ const App = () => {
     }
   }
 
-  function onMessageChange(event: ChangeEvent<HTMLInputElement>): void {
+  function onMessageChange(event: ChangeEvent<HTMLTextAreaElement>): void {
     setMessage(event.target.value);
   };
 
-  function onMessageSubmit(event: FormEvent): void {
+  function onMessageKeyDown(event: KeyboardEvent<HTMLTextAreaElement>): void {
+    if (event.key !== 'Enter' || event.shiftKey) return;
     event.preventDefault();
-    dispatch(addMessage({ body: message }));
+    form!.dispatchEvent(new Event(
+      'submit',
+
+      // Firefox will ignore event.preventDefault() without this
+      { cancelable: true },
+    ));
+  }
+
+  function onMessageSubmit(event: FormEvent): void {
+    const body = message.trim();
+
+    event.preventDefault();
+    if (!body) return;
+    dispatch(addMessage({ body }));
   }
 
   function onNicknameChange(event:ChangeEvent<HTMLInputElement>): void {
@@ -70,6 +87,17 @@ const App = () => {
     event.preventDefault();
     dispatch(connect({ name: nickname }));
   }
+
+  function formRef(this: FC, node: HTMLElement | null) {
+    if (!node) return;
+    form = node;
+  };
+
+  const textareaRef = (node: HTMLElement | null) => {
+    if (!node) return;
+    node.style.height = '1px';
+    node.style.height = `${node.scrollHeight}px`;
+  };
 
   if (!currentUser) return (
     <form onSubmit={onNicknameSubmit}>
@@ -102,10 +130,12 @@ const App = () => {
             }
           </Fragment>
         ))}
-        <form className="text-field" onSubmit={onMessageSubmit}>
-          <input
+        <form className="text-field" onSubmit={onMessageSubmit} ref={formRef}>
+          <textarea
             className="text-field__input"
             onChange={onMessageChange}
+            onKeyDown={onMessageKeyDown}
+            ref={textareaRef}
             value={message}
           />
         </form>
