@@ -72,10 +72,11 @@ const App = () => {
   }
 
   function onMessageSubmit(event: FormEvent): void {
-    const body = message.trim();
+    let body = message.trim();
 
     event.preventDefault();
     if (!body) return;
+    if (body === '/shrug') body = '¯\\_(ツ)_/¯';
     dispatch(addMessage({ body }));
   }
 
