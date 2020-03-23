@@ -1,4 +1,5 @@
 import './styles.css';
+
 import moment from 'moment';
 import React, {
   ChangeEvent,
@@ -9,6 +10,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useDispatch } from 'react-redux';
+
 import {
   addMessage,
   getMessages,
@@ -22,7 +25,6 @@ import {
 import { Message } from 'stores/messages/types';
 import { useAllMessages } from 'stores/messages/selectors';
 import { useCurrentUser } from 'stores/users/selectors';
-import { useDispatch } from 'react-redux';
 
 const App = () => {
   const currentUser = useCurrentUser();
@@ -32,6 +34,7 @@ const App = () => {
   const scrollEndNode = useRef<HTMLDivElement | null>(null);
   const [message, setMessage] = useState('');
   const [nickname, setNickname] = useState('');
+  const [didInitMessages, setDidInitMessages] = useState(false);
 
   useEffect(() => {
     dispatch(getCurrentUser());
@@ -47,8 +50,11 @@ const App = () => {
 
   useEffect(() => {
     setMessage('');
-    scrollToBottom();
-  }, [messages]);
+    scrollToBottom(didInitMessages);
+    if (messages.length && !didInitMessages) {
+      setDidInitMessages(true);
+    }
+  }, [didInitMessages, messages]);
 
   function buildAnnouncement(message: Message): string {
     switch (message.event) {
@@ -91,9 +97,11 @@ const App = () => {
     dispatch(connect({ name: nickname }));
   }
 
-  function scrollToBottom(): void {
+  function scrollToBottom(isSmooth: boolean): void {
     if (!scrollEndNode.current) return;
-    scrollEndNode.current.scrollIntoView({ behavior: "smooth" });
+    scrollEndNode.current.scrollIntoView({
+      behavior: isSmooth ? 'smooth' : 'auto',
+    });
   }
 
   const textareaRef = (node: HTMLElement | null) => {
