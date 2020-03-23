@@ -100,6 +100,7 @@ const App = () => {
     if (!node) return;
     node.style.height = '1px';
     node.style.height = `${node.scrollHeight}px`;
+    node.focus();
   };
 
   if (!currentUser) return (
