@@ -1,5 +1,7 @@
-import fetch from 'cross-fetch';
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux';
+
+import httpRequest from 'utils/http-request';
+import { accessToken } from 'components/auth';
 import { GRAPHQL_HTTP_URL } from 'utils/constants';
 
 type Error = {
@@ -27,29 +29,25 @@ export default (store: MiddlewareAPI) => (
         return nextAction;
       }
 
-      next(buildAction('pending'));
+      store.dispatch(buildAction('pending'));
 
       try {
-        const url = new URL(GRAPHQL_HTTP_URL);
-        const response = await fetch(
-          url.toString(),
+        const response = await httpRequest(
+          GRAPHQL_HTTP_URL,
           {
-            body: JSON.stringify(action.graphql),
-            credentials: 'include',
+            body: action.graphql,
             headers: {
-              'Content-Type': 'application/json',
+              ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
             },
-            method: 'post',
-            mode: 'cors',
           }
         );
         const payload = await response.json();
 
         if (response.status >= 400) {
-          return next(buildAction('failure', { payload }));
+          return store.dispatch(buildAction('failure', { payload }));
         }
         if (payload.errors) {
-          return next(buildAction(
+          return store.dispatch(buildAction(
             'failure',
             {
               errors: payload.errors.map((error: Error) => error.message),
@@ -57,9 +55,9 @@ export default (store: MiddlewareAPI) => (
             },
           ));
         }
-        next(buildAction('success', { payload }));
+        store.dispatch(buildAction('success', { payload }));
       } catch (error) {
-        next(buildAction('failure', { error: error.message } ));
+        store.dispatch(buildAction('failure', { error: error.message } ));
       }
     }
   )

@@ -6,12 +6,15 @@ import { Provider } from 'react-redux';
 
 import * as serviceWorker from './serviceWorker';
 import App from 'components/app';
+import Auth from 'components/auth';
 import store from 'stores';
 
 const renderApp = () => ReactDOM.render(
   (
   <Provider store={store}>
-    <App />
+    <Auth>
+      <App />
+    </Auth>
   </Provider>
   ),
   document.getElementById('root'),

@@ -1,11 +1,13 @@
 import { applyMiddleware, createStore, Store } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
+import auth from 'utils/middlewares/auth';
 import graphqlQueries from 'utils/middlewares/graphql-queries';
 import graphqlSubscriptions from 'utils/middlewares/graphql-subscriptions';
 import rootReducer from 'stores/root-reducer';
 
 const middlewares = [
+  auth,
   graphqlQueries,
   graphqlSubscriptions,
 ];

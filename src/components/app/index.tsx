@@ -18,7 +18,6 @@ import {
   listenToAddedMessages,
 } from 'stores/messages/actions';
 import {
-  connect,
   getCurrentUser,
   listenToConnectedUsers,
 } from 'stores/users/actions';
@@ -33,7 +32,6 @@ const App = () => {
   const formNode = useRef<HTMLFormElement | null>(null);
   const scrollEndNode = useRef<HTMLDivElement | null>(null);
   const [message, setMessage] = useState('');
-  const [nickname, setNickname] = useState('');
   const [didInitMessages, setDidInitMessages] = useState(false);
 
   useEffect(() => {
@@ -88,15 +86,6 @@ const App = () => {
     dispatch(addMessage({ body }));
   }
 
-  function onNicknameChange(event:ChangeEvent<HTMLInputElement>): void {
-    setNickname(event.target.value);
-  }
-
-  function onNicknameSubmit(event: FormEvent): void {
-    event.preventDefault();
-    dispatch(connect({ name: nickname }));
-  }
-
   function scrollToBottom(isSmooth: boolean): void {
     if (!scrollEndNode.current) return;
     scrollEndNode.current.scrollIntoView({
@@ -110,16 +99,6 @@ const App = () => {
     node.style.height = `${node.scrollHeight}px`;
     node.focus();
   };
-
-  if (!currentUser) return (
-    <form onSubmit={onNicknameSubmit}>
-      <input
-        onChange={onNicknameChange}
-        placeholder="Nickname"
-        value={nickname}
-      />
-    </form>
-  );
 
   return (
     <div className="app">
