@@ -1,8 +1,5 @@
-import { combineReducers } from 'redux';
-import messages from 'stores/messages/reducer';
-import users from 'stores/users/reducer';
+import configureStore from 'stores/configure-store';
 
-export default combineReducers({
-  messages,
-  users,
-});
+const store = configureStore();
+
+export default store;

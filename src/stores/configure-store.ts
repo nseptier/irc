@@ -1,8 +1,9 @@
-import graphqlQueries from 'utils/middlewares/graphql-queries';
-import graphqlSubscriptions from 'utils/middlewares/graphql-subscriptions';
-import reducer from 'stores/index';
 import { applyMiddleware, createStore, Store } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
+
+import graphqlQueries from 'utils/middlewares/graphql-queries';
+import graphqlSubscriptions from 'utils/middlewares/graphql-subscriptions';
+import rootReducer from 'stores/root-reducer';
 
 const middlewares = [
   graphqlQueries,
@@ -10,12 +11,15 @@ const middlewares = [
 ];
 const configureStore = (): Store => {
   const store = createStore(
-    reducer,
+    rootReducer,
     composeWithDevTools(applyMiddleware(...middlewares)),
   );
 
   if (process.env.NODE_ENV !== 'production' && module.hot) {
-      module.hot.accept('stores/index', () => store.replaceReducer(reducer));
+      module.hot.accept(
+        'stores/index',
+        () => store.replaceReducer(rootReducer),
+      );
   }
   return store;
 }
