@@ -1,0 +1,16 @@
+.connexion-form {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.connexion-form__input {
+  border: 1px solid lightgray;
+  border-radius: 40px;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 8px 16px;
+}

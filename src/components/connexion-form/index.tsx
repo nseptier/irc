@@ -1,3 +1,5 @@
+import './styles.css';
+
 import React, { FormEvent, useState } from 'react';
 
 type ConnexionFormProps ={
@@ -13,9 +15,12 @@ const ConnexionForm = ({ onSubmit }: ConnexionFormProps) => {
   }
 
   return (
-    <form onSubmit={onNicknameSubmit}>
+    <form className="connexion-form" onSubmit={onNicknameSubmit}>
       <input
+        autoFocus
+        className="connexion-form__input"
         onChange={event => setNickname(event.target.value)}
+        placeholder="Choose a nickname"
         value={nickname}
       />
     </form>
