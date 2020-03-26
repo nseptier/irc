@@ -17,7 +17,7 @@ const Auth = ({ children }: AuthProps) => {
   useEffect(() => {
     const refreshAccessToken = {
       query: `{
-        refreshAccessToken {
+        accessToken {
           token
           tokenExpiry
         }
@@ -31,8 +31,8 @@ const Auth = ({ children }: AuthProps) => {
 
       if (errors || response.status >= 400) return;
 
-      accessToken = data.refreshAccessToken.token;
-      setExpiry(data.refreshAccessToken.tokenExpiry);
+      accessToken = data.accessToken.token;
+      setExpiry(data.accessToken.tokenExpiry);
     }
 
     if (expiry) {
