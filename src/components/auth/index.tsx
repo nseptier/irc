@@ -25,7 +25,12 @@ const Auth = ({ children }: AuthProps) => {
     };
 
     async function refreshToken() {
-      const options = { body: refreshAccessToken };
+      const options = {
+        body: refreshAccessToken,
+        headers: {
+          ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+        },
+      };
       const response = await httpRequest(GRAPHQL_HTTP_URL, options);
       const { data, errors } = await response.json();
 
